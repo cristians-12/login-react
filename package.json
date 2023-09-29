@@ -11,7 +11,9 @@
     "dev1": "nodemon src/index.js"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.2",
     "morgan": "^1.10.0",
     "react": "^18.2.0",
