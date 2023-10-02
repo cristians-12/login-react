@@ -1,48 +1,81 @@
 import User from "../models/user.model.js";
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+import bcrypt from "bcryptjs";
+// import jwt from 'jsonwebtoken'
+import { createAccessToken } from "../libs/jwt.js";
 
 export const register = async (req, res) => {
   const { email, password, username } = req.body;
 
   try {
-    const passhash = await bcrypt.hash(password,10)
-
+    const passhash = await bcrypt.hash(password, 10);
     const newUser = new User({
       username,
       email,
-      password:passhash,
+      password: passhash,
     });
 
     const userSaved = await newUser.save();
+    const token = await createAccessToken({ id: userSaved._id });
 
-    jwt.sign({
-      id:userSaved._id,
-
-    },
-      'secret123',
-      {expiresIn: "1d"},
-      (err, token)=>{
-        if (err) console.log(err);
-        res.cookie('token',token);
-        res.json({
-          message: 'Usuario creado exitosamente'
-        })
-      }
-    )
-
+    res.cookie("token", token);
     // res.json({
-    //   id: userSaved._id,
-    //   username: userSaved.username,
-    //   email: userSaved.email,
-    //   createdAt: userSaved.createdAt,
-    //   updatedAt: userSaved.updatedAt
-    // }
-    // )
+    //   message: 'Usuario creado exitosamente'
+    // })
+
+    res.json({
+      id: userSaved._id,
+      username: userSaved.username,
+      email: userSaved.email,
+      createdAt: userSaved.createdAt,
+      updatedAt: userSaved.updatedAt,
+    });
   } catch (error) {
     console.log(error);
   }
-
 };
 
-export const login = (req, res) => res.send("login");
+// -----------------------Inicio de sesión ----------------------------------------
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const usuarioGuardado = await User.findOne({ email });
+
+    if (!usuarioGuardado)
+      return res
+        .status(400)
+        .json({ message: "Email de usuario no encontrado." });
+
+    const comparacion = await bcrypt.compare(
+      password,
+      usuarioGuardado.password
+    );
+
+    if (!comparacion)
+      return res
+        .status(400)
+        .json({ message: "Las contraseñas no son iguales." });
+
+    const token = await createAccessToken({ id: usuarioGuardado._id });
+
+    res.cookie("token", token);
+    // res.json({
+    //   message: 'Usuario creado exitosamente'
+    // })
+
+    res.json({
+      id: usuarioGuardado._id,
+      username: usuarioGuardado.username,
+      email: usuarioGuardado.email,
+      createdAt: usuarioGuardado.createdAt,
+      updatedAt: usuarioGuardado.updatedAt,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const logout = async(req,res)=>{
+  
+}
