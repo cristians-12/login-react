@@ -76,6 +76,15 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = async(req,res)=>{
-  
+// --------------------Cerrar sesion----------------------------------------------
+
+export const logout = async (req, res) => {
+    res.cookie("token", "",{
+      expires: new Date(0)
+    })
+    return res.sendStatus(200);
+};
+
+export const profile = async(req,res)=>{
+  res.send("Hola");
 }
