@@ -79,12 +79,24 @@ export const login = async (req, res) => {
 // --------------------Cerrar sesion----------------------------------------------
 
 export const logout = async (req, res) => {
-    res.cookie("token", "",{
-      expires: new Date(0)
-    })
-    return res.sendStatus(200);
+  res.cookie("token", "", {
+    expires: new Date(0),
+  });
+  return res.sendStatus(200);
 };
 
-export const profile = async(req,res)=>{
-  res.send("Hola");
-}
+export const profile = async (req, res) => {
+  // res.send("Hola");
+  const usuarioEncontrado = User.findById(req.user.id);
+
+  if (!usuarioEncontrado)
+    return res.status(400).json({ message: "Ese usuario no se encuentra." });
+  // console.log(req.user)
+  return res.json({
+    id: usuarioEncontrado._id,
+    username: usuarioEncontrado.username,
+    email: usuarioEncontrado.email,
+    createdAt: usuarioEncontrado.createdAt,
+    updatedAt: usuarioEncontrado.updatedAt,
+  });
+};
