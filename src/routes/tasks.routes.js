@@ -7,11 +7,13 @@ import {
   getTasks,
   updateTask,
 } from "../controllers/tasks.controller.js";
+import { createTaskSchema } from "../schemas/task.schema.js";
+import { validateSchema } from "../middlewares/validator.middleware.js";
 
 const router = Router();
 
 router.get("/tasks", authRequerida, getTasks);
-router.post("/tasks", authRequerida, crearTask);
+router.post("/tasks", authRequerida, validateSchema(createTaskSchema), crearTask);
 router.delete("/tasks/:id", authRequerida, borrarTask);
 router.get("/tasks/:id", authRequerida, getTask);
 router.put("/tasks/:id", authRequerida, updateTask);
