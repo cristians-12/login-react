@@ -1,18 +1,23 @@
 import { useForm } from "react-hook-form";
 import {soliRegistro} from "../api/auth.js";
+import { useAuth } from "../context/AuthContext.jsx";
+
 
 const RegisterPage = () => {
   const { register, handleSubmit } = useForm();
+  const {signup, user} = useAuth();
+
+  console.log(user)
+
+  const onSubmit = handleSubmit(async(values)=>{
+    signup(values);
+  })
 
   return (
     <main className="h-screen flex justify-center flex-col">
       <h1 className="text-center font-bold text-3xl">Register</h1>
       <form
-        onSubmit={handleSubmit(async (valores) => {
-          // console.log(valores);
-          const resp = await soliRegistro(valores);
-          console.log(resp)
-        })}
+        onSubmit={onSubmit}
         className="flex flex-col mx-auto w-2/6 gap-3 justify-center mt-[5%]"
       >
         <input
@@ -25,7 +30,7 @@ const RegisterPage = () => {
         <input
           type="email"
           name="email"
-          id=""
+          // id=""
           className="rounded p-1 border border-gray-300 focus:border-orange-500 focus:ring-blue-200 outline-none"
           {...register("email", { required: true })}
           placeholder="Email"
@@ -33,7 +38,7 @@ const RegisterPage = () => {
         <input
           type="password"
           name="password"
-          id=""
+          // id=""
           className="rounded p-1 border border-gray-300 focus:border-orange-500 focus:ring-blue-200 outline-none"
           {...register("password", { required: true })}
           placeholder="Contraseña"
