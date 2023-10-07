@@ -1,17 +1,16 @@
 import { useForm } from "react-hook-form";
-import {soliRegistro} from "../api/auth.js";
+// import { soliRegistro } from "../api/auth.js";
 import { useAuth } from "../context/AuthContext.jsx";
-
 
 const RegisterPage = () => {
   const { register, handleSubmit } = useForm();
-  const {signup, user} = useAuth();
+  const { signUp, user } = useAuth();
 
-  console.log(user)
+  console.log(user);
 
-  const onSubmit = handleSubmit(async(values)=>{
-    signup(values);
-  })
+  const onSubmit = handleSubmit(async (values) => {
+    await signUp(values);
+  });
 
   return (
     <main className="h-screen flex justify-center flex-col">
